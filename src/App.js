@@ -1,16 +1,15 @@
 import './App.css';
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import Navbar from './components/Navbar';
 import News from './components/News';
-import NewsItem from './components/NewsItem';
 import LoadingBar from 'react-top-loading-bar'
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
-  Link,
   Routes
 } from "react-router-dom";
+
+
 
 const App = () =>  { 
 

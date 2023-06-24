@@ -2,8 +2,8 @@ import React, { useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import NewsItem from './NewsItem'
 import Spinner from './Spinner';
-import { type } from '@testing-library/user-event/dist/type';
 import InfiniteScroll from "react-infinite-scroll-component";
+
 
 
 const News = (props) => {
@@ -12,11 +12,6 @@ const News = (props) => {
     const [loading,setLoading] = useState(true)
     const [page,setPage] = useState(1)
     const [totalResults,setTotalResults] = useState(0)
-
-        // document.title=`${this.capitalizeFirstLetter(props.category)} - News Monkey`;
-    const capitalizeFirstLetter = (string) => {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    }
 
     
     const updateNews= async() =>{
@@ -39,22 +34,17 @@ const News = (props) => {
       updateNews();
     },[])
 
-    // handleNextClick =async () => {
-    //   this.setState({page: this.state.page+1})
-    //   this.updateNews();
-    // }
-
-    // handlePrevClick = async () =>{
-    //   this.setState({page: this.state.page-1})
-    //   this.updateNews();
-    // }
+  
     const fetchMoreData = async() => {
       setLoading(true)
       const url =`https://newsapi.org/v2/top-headlines/?country=${props.country}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}&category=${props.category}`;
       setPage(page+1)
-      let data = await fetch(url);
-      let parsedData = await data.json();
+      let data = await fetch(url).then(resp => {
+        return resp.json();
+      });
+      let parsedData = await data;
       setArticles(articles.concat(parsedData.articles));
+      console.log(articles);
       setTotalResults(parsedData.totalResults);
     }
 
@@ -70,17 +60,14 @@ const News = (props) => {
       
         <div className="container">
         <div className="row">
-            {articles.map((element)=>{ 
+            {articles.map((
+              element)=>{ 
                 return <div key={element.url} className="col-md-4 col-sm-6">
             <NewsItem  newsUrl={element.url} title={element.title?element.title:" "} description={element.description?element.description:" "} imageUrl={element.urlToImage} author={element.author} date={element.publishedAt}/>
             </div>})}
         </div>
         </div>
         
-        {/* <div className="container d-flex justify-content-between">
-        <button disabled={this.state.page<=1?true:false} type="button" className="btn btn-dark mx-2" onClick={this.handlePrevClick}>&larr; Previous</button>
-        <button disabled={this.state.page + 1 > Math.ceil((this.state.totatArticles)/props.pageSize)?true:false} type="button" className="btn btn-dark mx-2" onClick={this.handleNextClick}>Next &rarr;</button>
-        </div> */}
       </div>
       </InfiniteScroll>
     )
